@@ -1,17 +1,15 @@
 import express from "express";
 import dotenv from "dotenv";
-import { MongoDBConnection } from "./configs/db";
+import { MongoDBConnection } from "./configs/db.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
 const app = express();
 
-app.get("/", (req, res) => {
-  res.send("Hello Sir");
-});
+app.use("/api/auth", authRoutes);
 
-MongoDBConnection();
-
-app.listen(5000, () => {
+app.listen(5000, async () => {
+  await MongoDBConnection();
   console.log("server is runnig on post 5000");
 });
