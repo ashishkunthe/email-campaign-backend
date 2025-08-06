@@ -2,6 +2,7 @@ import express from "express";
 import dotenv from "dotenv";
 import { MongoDBConnection } from "./configs/db.js";
 import authRoutes from "./routes/authRoutes.js";
+import flowRoutes from "./routes/flowRoutes.js";
 import rateLimit from "express-rate-limit";
 
 const globalLimiter = rateLimit({
@@ -18,6 +19,7 @@ const app = express();
 
 app.use(globalLimiter);
 app.use("/api/auth", authRoutes);
+app.use("/api", flowRoutes);
 
 app.listen(5000, async () => {
   await MongoDBConnection();
