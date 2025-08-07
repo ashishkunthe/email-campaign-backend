@@ -16,4 +16,7 @@ router.get("/flows/:id", authMiddleware as any, getFlowById as any);
 router.put("/flows/:id", authMiddleware as any, updateFlow as any);
 router.delete("/flows/:id", authMiddleware as any, deleteFlow as any);
 
+// route for executing the flow of the given Id
+router.post("/flow/:id/execute", authMiddleware as any);
+
 export default router;
