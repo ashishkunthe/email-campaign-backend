@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import flowModels from "../models/flowModels";
-import { sendEmail } from "../utils/sendEmails";
+import flowModels from "../models/flowModels.js";
+import { agenda } from "../configs/agenda.js"; // Import Agenda instance
 
 interface RequestUpdated extends Request {
   userId: string;
@@ -9,40 +9,35 @@ interface RequestUpdated extends Request {
 export async function executeFlow(req: RequestUpdated, res: Response) {
   const userId = req.userId;
   const flowId = req.params.id;
-  const { to, subject, body } = req.body;
 
   try {
-    const flow = await flowModels.findOne({ userId: userId, _id: flowId });
-
+    const flow = await flowModels.findOne({ userId, _id: flowId });
     if (!flow) {
       return res.status(404).json({ message: "Flow not found" });
     }
 
-    // @ts-check
-    const emailNode = flow.nodes.find((node) => node.type === "email");
+    // Find the first node (could be "email" or "wait")
+    const startNode = flow.nodes.find(
+      (node) => node.type === "email" || node.type === "wait"
+    );
 
-    if (!emailNode) {
-      return res.status(400).json({ message: "No email node found in flow" });
+    if (!startNode) {
+      return res.status(400).json({ message: "No start node found in flow" });
     }
 
-    const finalSubject = subject || emailNode.data.subject;
-    const finalBody = body || emailNode.data.body;
-
-    if (!to || !finalSubject || !finalBody) {
-      return res.status(400).json({ message: "Missing required fields" });
+    // Schedule the first job
+    if (startNode.type === "email") {
+      await agenda.now("execute-node", { flowId, nodeId: startNode.id });
+    } else if (startNode.type === "wait") {
+      await agenda.schedule(`in ${startNode.data.delay}`, "execute-node", {
+        flowId,
+        nodeId: startNode.id,
+      });
     }
 
-    await sendEmail({
-      to: to,
-      subject: finalSubject,
-      html: `<p>${finalBody}</p>`,
-      // @ts-ignore
-      flowId: flow._id.toString(),
-      nodeId: emailNode.id,
-    });
-    res.status(200).json({ message: "Flow executed and email sent" });
+    res.status(200).json({ message: "Flow execution started" });
   } catch (error) {
     console.error("Flow execution failed", error);
-    res.status(500).json({ message: "Execution failed", error: error });
+    res.status(500).json({ message: "Execution failed", error });
   }
 }
