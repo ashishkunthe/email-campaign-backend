@@ -148,7 +148,7 @@ npm run test
 
 ## 📜 License
 
-MIT License – Feel free to use and modify.
+Feel free to use and modify.
 
 ---
 
