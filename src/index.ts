@@ -7,6 +7,7 @@ import rateLimit from "express-rate-limit";
 import { agenda } from "./configs/agenda.js";
 import sendEmailJob from "./jobs/sendEmailJob.js";
 import executeNodeJob from "./jobs/executeNodeJob.js";
+import cors from "cors";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ const globalLimiter = rateLimit({
   legacyHeaders: false,
 });
 app.use(globalLimiter);
+app.use(cors());
 
 app.use("/api/auth", authRoutes);
 app.use("/api", flowRoutes);
