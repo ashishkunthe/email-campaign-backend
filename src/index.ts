@@ -4,6 +4,7 @@ import { MongoDBConnection } from "./configs/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import flowRoutes from "./routes/flowRoutes.js";
 import templateRoutes from "./routes/templatesRoutes.js";
+import contactRoutes from "./routes/contactRoutes.js";
 
 import rateLimit from "express-rate-limit";
 import { agenda } from "./configs/agenda.js";
@@ -29,6 +30,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api", flowRoutes);
 app.use("/api", templateRoutes);
+app.use("/contacts", contactRoutes);
 
 sendEmailJob(agenda);
 executeNodeJob(agenda);

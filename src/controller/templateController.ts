@@ -30,6 +30,7 @@ export const createTemplate = async (req: RequestExtends, res: Response) => {
       .status(201)
       .json({ message: "Template created", template: newTemplate });
   } catch (err) {
+    console.log(err);
     res.status(500).json({ message: "Failed to create template" });
   }
 };

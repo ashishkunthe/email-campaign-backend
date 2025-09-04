@@ -7,7 +7,6 @@ import {
   getTemplates,
   updateTemplate,
 } from "../controller/templateController.js";
-import { Template } from "../models/templateModel.js";
 
 const router = Router();
 
