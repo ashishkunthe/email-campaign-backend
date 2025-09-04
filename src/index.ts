@@ -30,7 +30,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api", flowRoutes);
 app.use("/api", templateRoutes);
-app.use("/contacts", contactRoutes);
+app.use("/api/contacts", contactRoutes);
 
 sendEmailJob(agenda);
 executeNodeJob(agenda);
